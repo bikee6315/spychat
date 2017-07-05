@@ -56,8 +56,11 @@ def start_chat(spy):
     while(show_menu):
         menu_choices = "CHOOSE:\n\t 1.ADD A STATUS UPDATE\n\t 2.ADD A FRIEND\n\t 3.SEND A MESSAGE\n\t 4.READ A MESSAGE\n\t 5.CHAT HISTORY\n\t 6.DELETE A FRIEND\n\t 7.EXIT THE APPLICATION"
         print menu_choices
-        menu_choice=raw_input('Enter the choice:')
-        menu_choice=int(menu_choice)
+        try:
+         menu_choice=raw_input('Enter the choice:')
+         menu_choice=int(menu_choice)
+        except ValueError:
+            print"INVALID INPUT.PLEASE CHOOSE AGAIN"
 
         #STATUS UPDATION
 
@@ -65,52 +68,73 @@ def start_chat(spy):
             print 'YOU CHOOSE TO UPDATE THE STATUS'
 
             def add_status(current_status_message):
+
                 if current_status_message != None:
                     print'Your current status is' + " " + current_status_message
                 else:
                     print'YOU DON\'T HAVE ANY CURRENT STATUS MESSAGE'
-                default = raw_input('Do you want to choose from older status message \n\t a.YES\n\t b.NO \nEnter your choice:')
+                    print 'Do you want to choose from older status message \n\t a.YES\n\t b.NO \n'
+                while True:
+                    default = raw_input('Enter your choice:')
 
-                #INSERTING A NEW STATUS
-                if default == "NO" or default=="b":
-                    new_status_message = raw_input('PLEASE INPUT YOUR STATUS MESSAGE:')
+                    # INSERTING A NEW STATUS
+                    if default == "NO" or default == "b":
 
-                    if (new_status_message) > 0:   #CHECKING LENGTH OF INSERTED STATUS
-                        updated_status_messsage = new_status_message
-                        STATUS_MESSAGES.append(updated_status_messsage)
-                        print'UPDATING............'
-                        print 'YOUR STATUS HAS BEEN UPDATED,YOUR CURRENT STATUS IS:', updated_status_messsage
-                        print 'LIST OF STATUS MESSAGES:'
+                        new_status_message = raw_input('PLEASE INPUT YOUR STATUS MESSAGE:')
 
-                        item_position = 1
-                        for statuses in STATUS_MESSAGES:
-                            print str(item_position) + "." + statuses
-                            item_position = item_position +1
+                        if len(new_status_message) > 0:  # CHECKING LENGTH OF INSERTED STATUS
 
-                        return updated_status_messsage
+                            updated_status_messsage = new_status_message
+                            STATUS_MESSAGES.append(updated_status_messsage)
+                            print'UPDATING............'
+                            print 'YOUR STATUS HAS BEEN UPDATED,YOUR CURRENT STATUS IS:', updated_status_messsage
+                            print 'LIST OF STATUS MESSAGES:'
+
+                            item_position = 1
+                            for statuses in STATUS_MESSAGES:
+                                print str(item_position) + "." + statuses
+                                item_position = item_position + 1
+                            return updated_status_messsage
+
+
+                        else:
+                            print'Please enter a valid status message'  # ERROR HANDLING FOR EMPTY STATUS
+
+                            # CHOOSING STATUS FROM OLDER STATUS MESSAGE
+
+                    elif default == "YES" or default == "a":
+                        while True:
+                            print 'OLDER STATUS MESSAGE ARE:'
+                            item_position = 1
+                            for statuses in STATUS_MESSAGES:
+                                print str(item_position) + "." + statuses
+                                item_position = item_position + 1
+
+                            while True:
+                                try:
+                                    message = int(raw_input('Choose from above messages:'))
+                                    message_selection = message
+                                except ValueError:
+                                    print "Numbers only"
+                                    continue
+                                break
+                            if len(STATUS_MESSAGES) >= message_selection:
+                                updated_status_messsage = STATUS_MESSAGES[message_selection - 1]
+                                print'UPDATING......'
+                                print'\tYOUR STATUS HAS BEEN UPDATED SUCCESSFULLY AND YOUR CURRENT STATUS IS:' + " " + updated_status_messsage
+                                break
+
+                            else:
+                                print 'PLEASE SELECT A VALID NUMBER'
+
+
                     else:
-                        print'Please enter a valid status message'  #ERROR HANDLING FOR EMPTY STATUS
+                        print'INVALID INPUT.PLEASE ENTER a OR b'
+                    break
 
-                        #CHOOSING STATUS FROM OLDER STATUS MESSAGE
-
-                else:
-                    print 'OLDER STATUS MESSAGE ARE:'
-                    item_position = 1
-                    for statuses in STATUS_MESSAGES:
-
-                        print str(item_position) + "." + statuses
-                        item_position = item_position + 1
-
-                    message_selection = int(raw_input('Choose from above messages:'))
-                    if len(STATUS_MESSAGES) >= message_selection:
-                        updated_status_messsage = STATUS_MESSAGES[message_selection - 1]
-                        print'UPDATING......'
-                        print'\tYOUR STATUS HAS BEEN UPDATED SUCCESSFULLY AND YOUR CURRENT STATUS IS:'+" "+updated_status_messsage
-                    else:
-                        print 'PLEASE SELECT A VALID NUMBER'
-                    return updated_status_messsage
 
             current_status_message = add_status(current_status_message)
+
 
             #ADDING A FRIEND
 
@@ -123,6 +147,12 @@ def start_chat(spy):
                 new_friend.name = raw_input('\tYOUR FRIEND NAME:')
                 new_friend.salutation = raw_input("\tMR./MRS./MISS:")
                 new_friend.age = int(raw_input("\tAGE:"))
+                print'SPY-RATING:'
+                print'\t>> BETWEEN 1-1.9: We can always use somebody to help in the office '
+                print'\t>> BETWEEN 2-2.9: BEGINNER'
+                print'\t>> BETWEEN 3-4.4: INTERMEDIATE'
+                print'\t>> BETWEEN 4.5-5: EXPERT'
+
                 new_friend.rating = float(raw_input("\tSpy Rating(Out of 5):"))
 
                 if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating > 0:
@@ -275,6 +305,9 @@ def start_chat(spy):
 
         elif menu_choice==7:
             show_menu = False
+        #else:
+            #print'INVALID INPUT'
+
 
     s = open("status.txt","w")
     for statuses in STATUS_MESSAGES:
@@ -290,94 +323,111 @@ while(j):
             logi = int(raw_input('Enter your choice:'))
             login = logi
         except ValueError:
-            print "Only numbers 1&2"
+            print "ONLY NUMBERS 1 & 2"
             continue
         break
     if login!=1 and login!=2:
         print'Invalid Entry'
     elif login==1:
-        password=raw_input('PLEASE ENTER YOUR PASSWORD:')
-
-        #CHECK FOR PASSWORD OF DEFAULT USER
         i = True
         while (i):
+            password = raw_input('PLEASE ENTER YOUR PASSWORD:')
+
+            # CHECK FOR PASSWORD OF DEFAULT USER
+            # i = True
+            # while (i):
             if password != default_password:
-                print'ENTER PASSWORD AGAIN'
-                password = raw_input('PASSWORD INCORRECT!! PLEASE ENTER THE CORRECT PASSWORD:')
+                print'\tPASSWORD INCORRECT'
+                # password = raw_input('PASSWORD INCORRECT!! PLEASE ENTER THE CORRECT PASSWORD:')
             else:
                 print 'Loading.....'
                 print 'PASSWORD MATCHED'
                 print'Hey! Bikee,Nice to see you again'
-                #STATUS FOR DEFAULT USER
-            spy_is_online = True
-            while (spy_is_online):
-                status = raw_input('Your status(ONLINE/OFFLINE):')
-                if status!="ONLINE"and status!="OFFLINE":
-                    print'Please enter a valid status'
-                elif status=="OFFLINE" or status=="offline":
-                    print'YOU ARE OFFLINE NOW'
-                    spy_is_online = False
-                elif status=="ONLINE" or status=="online":
-                    print 'YOU ARE ONLINE NOW'
-                    spy_is_online = False
-            i = False
-        start_chat(spy)
 
-    #SIGN UP FOR NEW USER....
-    elif login==2:
-     while True:
-        print'PLEASE SIGN UP'
-        spy_name = raw_input('\tUSERNAME:')
-        if spy_name > 0:
-            spy_salutation = raw_input('\tMR/MRS/MISS:')
-            try:
-                spy_age = raw_input('\tAGE:')
-                spy_age = int(spy_age)
-            except ValueError:
-                print 'PLEASE ENTER VALID AGE'
-
-            if spy_age > 12 and spy_age < 50:
-                print'SPY-RATING:'
-                print'\t>> BETWEEN 1-1.9: We can always use somebody to help in the office '
-                print'\t>> BETWEEN 2-2.9: BEGINNER'
-                print'\t>> BETWEEN 3-4.4: INTERMEDIATE'
-                print'\t>> BETWEEN 4.5-5: EXPERT'
-                spy_rating = float(raw_input('\nEnter your Spy Rating(Out of 5):'))
-
-                if spy_rating >= 4.5 and spy_rating <= 5:
-                    print'\tEXPERT'
-                elif spy_rating >= 3 and spy_rating < 4.5:
-                    print'\tINTERMEDIATE'
-                elif spy_rating >= 2 and spy_rating < 3:
-                    print'\tBEGINNER'
-                else:
-                    print '\tWe can always use somebody to help in the office'
-
-                user_password = raw_input('\tCREATE YOUR PASSWORD:')
-                print 'Creating your account....'
-                print '\tBOOM......Your account has been successfully created.'
-                print  '\t' + spy_salutation + " " + spy_name + '!!' + " " + 'WELCOME TO THE WORLD OF SPYCHAT'
-                print 'Your username is' + " " + spy_name + " " + 'and password is' + " " + user_password
-
-                # USER STATUS(ONLINE/OFFLINE)
+                # STATUS FOR DEFAULT USER
                 spy_is_online = True
                 while (spy_is_online):
                     status = raw_input('Your status(ONLINE/OFFLINE):')
                     if status != "ONLINE" and status != "OFFLINE":
                         print'Please enter a valid status'
-                    elif status == "OFFLINE":
+                    elif status == "OFFLINE" or status == "offline":
                         print'YOU ARE OFFLINE NOW'
                         spy_is_online = False
-                    elif status == "ONLINE":
+                    elif status == "ONLINE" or status == "online":
                         print 'YOU ARE ONLINE NOW'
                         spy_is_online = False
-
-                start_chat(spy)
-                break
+                i = False
 
 
-        else:
-            print'Sorry, You are not eligible for SPYCHAT'
+        start_chat(spy)
+
+    #SIGN UP FOR NEW USER....
+    elif login==2:
+
+        while True:
+            print'PLEASE SIGN UP'
+            spy_name = raw_input('\tUSERNAME:')
+            if len(spy_name) > 0:
+                spy_salutation = raw_input('\tMR/MRS/MISS:')
+                while True:
+                    try:
+                        spy_age = raw_input('\tAGE:')
+                        spy_age = int(spy_age)
+                    except ValueError:
+                        print 'PLEASE ENTER VALID AGE'
+                        continue
+                    break
+                if spy_age > 12 and spy_age < 50:
+                    print'SPY-RATING:'
+                    print'\t>> BETWEEN 1-1.9: We can always use somebody to help in the office '
+                    print'\t>> BETWEEN 2-2.9: BEGINNER'
+                    print'\t>> BETWEEN 3-4.4: INTERMEDIATE'
+                    print'\t>> BETWEEN 4.5-5: EXPERT'
+                    while True:
+                        try:
+                            spy_rating = float(raw_input('\nEnter your Spy Rating(Out of 5):'))
+                            if spy_rating >= 4.5 and spy_rating <= 5:
+                                print'\tEXPERT'
+                            elif spy_rating >= 3 and spy_rating < 4.5:
+                                print'\tINTERMEDIATE'
+                            elif spy_rating >= 2 and spy_rating < 3:
+                                print'\tBEGINNER'
+                            else:
+                                print '\tWe can always use somebody to help in the office'
+                        except ValueError:
+                            print 'Numbers only'
+                            continue
+                            user_password = raw_input('\tCREATE YOUR PASSWORD:')
+                            print 'Creating your account....'
+                            print '\tBOOM......Your account has been successfully created.'
+                            print  '\t' + spy_salutation + " " + spy_name + '!!' + " " + 'WELCOME TO THE WORLD OF SPYCHAT'
+                            print 'Your username is' + " " + spy_name + " " + 'and password is' + " " + user_password
+                        break
+
+                        # else:
+                        #   print'NOT ELIGIBLE'
+                        # continue
+
+                        # USER STATUS(ONLINE/OFFLINE)
+                        spy_is_online = True
+                        while (spy_is_online):
+                            status = raw_input('Your status(ONLINE/OFFLINE):')
+                            if status != "ONLINE" and status != "OFFLINE":
+                                print'Please enter a valid status'
+                            elif status == "OFFLINE":
+                                print'YOU ARE OFFLINE NOW'
+                                spy_is_online = False
+                            elif status == "ONLINE":
+                                print 'YOU ARE ONLINE NOW'
+                                spy_is_online = False
+                    start_chat(spy)
+
+
+                else:
+                    print'Sorry, You are not eligible for SPYCHAT'
+                continue
+            else:
+                print 'ENTER YOUR USERNAME FIRST'
 
 j=False
 
