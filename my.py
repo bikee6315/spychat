@@ -1,8 +1,9 @@
 #PASSWORD FOR DEFAULT USER=gni
-
-from steganography.steganography import Steganography      #importing stenanography module
-from spy_details import spy,Spy,chatmessage,friends,default_password
-from termcolor import colored          #Importing termcolor module
+#ENCODING IMAGE=hello.jpg
+#DECODING IMAGE=output.jpg
+from steganography.steganography import Steganography                       #importing stenanography module
+from spy_details import spy,Spy,chatmessage,friends,default_password        #importing different classes
+from termcolor import colored                                               #Importing termcolor module
 
 friend_choice=0
 
@@ -57,10 +58,13 @@ def start_chat(spy):
         menu_choices = "CHOOSE:\n\t 1.ADD A STATUS UPDATE\n\t 2.ADD A FRIEND\n\t 3.SEND A MESSAGE\n\t 4.READ A MESSAGE\n\t 5.CHAT HISTORY\n\t 6.DELETE A FRIEND\n\t 7.EXIT THE APPLICATION"
         print menu_choices
         try:
-         menu_choice=raw_input('Enter the choice:')
-         menu_choice=int(menu_choice)
+            menu_choice=raw_input('Enter the choice:')
+            menu_choice=int(menu_choice)
         except ValueError:
             print"INVALID INPUT.PLEASE CHOOSE AGAIN"
+        if menu_choice>7:
+            print 'INVALID INPUT'
+
 
         #STATUS UPDATION
 
@@ -73,7 +77,7 @@ def start_chat(spy):
                     print'Your current status is' + " " + current_status_message
                 else:
                     print'YOU DON\'T HAVE ANY CURRENT STATUS MESSAGE'
-                    print 'Do you want to choose from older status message \n\t a.YES\n\t b.NO \n'
+                    print 'Do you want to choose from older status message \n\t a.YES\n\t b.NO'
                 while True:
                     default = raw_input('Enter your choice:')
 
@@ -94,7 +98,7 @@ def start_chat(spy):
                             for statuses in STATUS_MESSAGES:
                                 print str(item_position) + "." + statuses
                                 item_position = item_position + 1
-                            return updated_status_messsage
+                                # return updated_status_messsage
 
 
                         else:
@@ -144,15 +148,15 @@ def start_chat(spy):
             def add_friend():
 
                 new_friend = Spy('', '', 0, 0.0)
-                new_friend.name = raw_input('\tYOUR FRIEND NAME:')
-                new_friend.salutation = raw_input("\tMR./MRS./MISS:")
+                new_friend.name = raw_input('\tYOUR FRIEND NAME:')           #FRIEND NAME
+                new_friend.salutation = raw_input("\tMR./MRS./MISS:")        #SALUTATION FOR FRIEND
                 while True:
-                 try:
-                  new_friend.age = int(raw_input("\tAGE:"))
-                 except ValueError:
-                    print'INVALID AGE'
-                    continue
-                 break
+                    try:
+                        new_friend.age = int(raw_input("\tAGE:"))                  #FRIEND AGE
+                    except ValueError:
+                        print'INVALID AGE'
+                        continue
+                    break
                 print'SPY-RATING:'
                 print'\t>> BETWEEN 1-1.9: We can always use somebody to help in the office '
                 print'\t>> BETWEEN 2-2.9: BEGINNER'
@@ -161,24 +165,26 @@ def start_chat(spy):
 
                 while True:
                     try:
-                     new_friend.rating = float(raw_input("\tSpy Rating(Out of 5):"))
+                        new_friend.rating = float(raw_input("\tSpy Rating(Out of 5):"))       #RATING OF FRIEND
                     except ValueError:
                         print'INVALID RATING'
                         continue
                     break
 
                 if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating <5:
-                    friends.append(new_friend)
+                    friends.append(new_friend)                                                 #ADDING FRIEND
                     return len(friends)
                 else:
                     print'Sorry! Invalid Entry. Please try again.'
                 return add_friend()
 
+            add_friend()                                                        #add-friend function call
 
-            add_friend()
             print'LOADING......'
             print'CONGRATS! YOU FRIEND IS SUCESSFULLY ADDED'
             print 'KEEP ADDING YOUR FRIENDS'
+
+            #PRINT ALL THE FRIENDS
             item_number=1
             for friend in friends:
                 print '%d. %s aged %d with rating %.2f is online.' %(item_number, friend.name, friend.age, friend.rating)
@@ -192,7 +198,7 @@ def start_chat(spy):
             def send_message():
                 while True:
                     friend_choice=select_friend()
-                    try:                     #ERROR HANDLING FOR WRONG INPUT
+                    try:                                             #ERROR HANDLING FOR WRONG INPUT
                         friends[friend_choice]
                     except ValueError:
                         print'\nInvalid number'
@@ -204,18 +210,19 @@ def start_chat(spy):
                     break
                 while True:
                     try:
-                      original_image=raw_input('\tNAME OF IMAGE:')
-                    except IOError:
+                        original_image=raw_input('\tNAME OF IMAGE:')              #NAME OF IMAGE TO BE SENDED
+                        output_path='output.jpg'
+                        text=raw_input('\tENTER THE TEXT:')                       #TEXT TO BE HIDDEN INSIDE IMAGE
+                        print'LOADING.....\n'
+                        print'\tYOUR MESSAGE IS BEING READY\n'
+                        Steganography.encode(original_image,output_path,text)      #ENCODING OF IMAGE
+                    except IOError:                                              #ERROE HANDLING FOR INVALID FILE
                         print'NO SUCH IMAGE OR FILE EXIST.PLEASE TRY AGAIN'
                         continue
                     break
-                output_path='output.jpg'
-                text=raw_input('\tENTER THE TEXT:')
-                print'LOADING.....\n'
-                print'\tYOUR MESSAGE IS BEING READY\n'
-                Steganography.encode(original_image,output_path,text)
+
                 new_chat = chatmessage(text, True)
-                friends[friend_choice].chats.append(new_chat)
+                friends[friend_choice].chats.append(new_chat)                   #APPEND CHATS
 
             send_message()
 
@@ -225,10 +232,10 @@ def start_chat(spy):
             print 'You choose to read a message\n'
 
             def read_message():
-                special_messages=['SAVEME','HELP','SOS','FIRE','AMBULANCE','saveme','help','fire','sos','ambulance']
+                special_messages=['SAVEME','HELP','SOS','FIRE','AMBULANCE','saveme','help','fire','sos','ambulance']   #SPECIAL MESSAGES FOR EMERGENCY
                 while True:
                     sender=select_friend()
-                    try:                  #ERROR HANDLE FOR WRONG INPUT
+                    try:                                                    #ERROR HANDLE FOR WRONG INPUT
                         friends[sender]
                     except ValueError:
                         print'\nInvalid number'
@@ -238,15 +245,22 @@ def start_chat(spy):
                         print'Please choose a valid friend'
                         continue
                     break
-                output_path=raw_input("\tFILE NAME:")
-                secret_text=Steganography.decode(output_path)
+                while True:
+                    try:
+                        output_path=raw_input("\tFILE NAME:")                     #NAME OF OUTPUT IMAGE
+                        secret_text=Steganography.decode(output_path)             #DECODING OF IMAGE
+                    except IOError:                                             #ERROR HANDLING FOR INVALID IMAGE FILE
+                        print'NO SUCH FILE EXIST'
+                        continue
+                    break
+
                 new_chat = chatmessage(secret_text, False)
-                friends[sender].chats.append(new_chat)
+                friends[sender].chats.append(new_chat)                         #APPENDING CHATS
                 print"DECRYPTING....."
 
-                if len(secret_text)==0:                              #ERROR HANDLING FOR EMPTY MESSAGE
+                if len(secret_text)==0:                                        #ERROR HANDLING FOR EMPTY MESSAGE
                     print"SORRY!! THIS IMAGE DOESN\'T CONTAIN ANY MESSAGE"
-                elif secret_text in special_messages:
+                elif secret_text in special_messages:                          #SPECIAL MESSAGES IN ENCRYPTING IMAGE
                     print'\n\tMESSAGE FOUND:'+secret_text
                     print'\tPLEASE CALL ON THIS NUMBER:+918976543210\n'
                 else:
@@ -273,6 +287,8 @@ def start_chat(spy):
                         continue
                     break
                 text = 'You said:'
+
+                #COLOR IMPLEMENTATION ON DATETIME,FRIEND NAME AND CHATS
                 for chat in friends[read_for].chats:
                     if chat.sent_by_me==True:
                         print colored ('[%s] '%chat.datetime,'blue'),
@@ -316,14 +332,16 @@ def start_chat(spy):
                                 item_number = item_number + 1
                         else:
                             print'Sorry! Friend spoke less than 100 words'
+                            break
 
             delete_friend()
 
             #EXIT THE APPLICATION
 
         elif menu_choice==7:
+            print'\tGOOD DAY!!!'
             show_menu = False
-        #else:
+            #else:
             #print'INVALID INPUT'
 
 
