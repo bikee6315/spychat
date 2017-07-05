@@ -146,16 +146,28 @@ def start_chat(spy):
                 new_friend = Spy('', '', 0, 0.0)
                 new_friend.name = raw_input('\tYOUR FRIEND NAME:')
                 new_friend.salutation = raw_input("\tMR./MRS./MISS:")
-                new_friend.age = int(raw_input("\tAGE:"))
+                while True:
+                 try:
+                  new_friend.age = int(raw_input("\tAGE:"))
+                 except ValueError:
+                    print'INVALID AGE'
+                    continue
+                 break
                 print'SPY-RATING:'
                 print'\t>> BETWEEN 1-1.9: We can always use somebody to help in the office '
                 print'\t>> BETWEEN 2-2.9: BEGINNER'
                 print'\t>> BETWEEN 3-4.4: INTERMEDIATE'
                 print'\t>> BETWEEN 4.5-5: EXPERT'
 
-                new_friend.rating = float(raw_input("\tSpy Rating(Out of 5):"))
+                while True:
+                    try:
+                     new_friend.rating = float(raw_input("\tSpy Rating(Out of 5):"))
+                    except ValueError:
+                        print'INVALID RATING'
+                        continue
+                    break
 
-                if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating > 0:
+                if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating <5:
                     friends.append(new_friend)
                     return len(friends)
                 else:
@@ -190,7 +202,13 @@ def start_chat(spy):
                         print'Please choose a valid friend\n'
                         continue
                     break
-                original_image=raw_input('\tNAME OF IMAGE:')
+                while True:
+                    try:
+                      original_image=raw_input('\tNAME OF IMAGE:')
+                    except IOError:
+                        print'NO SUCH IMAGE OR FILE EXIST.PLEASE TRY AGAIN'
+                        continue
+                    break
                 output_path='output.jpg'
                 text=raw_input('\tENTER THE TEXT:')
                 print'LOADING.....\n'
