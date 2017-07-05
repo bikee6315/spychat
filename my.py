@@ -320,7 +320,7 @@ while(j):
                 elif status=="ONLINE" or status=="online":
                     print 'YOU ARE ONLINE NOW'
                     spy_is_online = False
-        i = False
+            i = False
         start_chat(spy)
 
     #SIGN UP FOR NEW USER....
